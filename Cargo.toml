@@ -1,0 +1,21 @@
+[package]
+name = "veyron-wire"
+version = "0.1.1"
+edition = "2021"
+rust-version = "1.85.0"
+description = "Veyron wire protocol: framing, frame MAC, and generated protobuf types shared by the kernel and its SDKs."
+license = "MIT"
+repository = "https://github.com/veyron-core/veyron-wire"
+
+[dependencies]
+prost = "0.13"
+tokio = { version = "1", features = ["io-util", "time"] }
+hmac = "0.12"
+sha2 = "0.10"
+hkdf = "0.12"
+nix = { version = "0.31", features = ["user"] }
+crc32fast = "1"
+zstd = "0.13"
+
+[build-dependencies]
+prost-build = "0.13"
