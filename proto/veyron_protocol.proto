@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package veyron;
 
-// v 1.2  (frame MAC: session_nonce, ERR_MAC_MISSING/INVALID)
+// v 1.3  (R6: streaming actions, event publish, per-caller storage, caller_plugin_id)
 
 // ═══════════════════════════════════════════
 // root envelope — every message goes through this
