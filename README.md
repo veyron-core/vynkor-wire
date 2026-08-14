@@ -41,6 +41,17 @@ The wire protocol version lives in two places that must stay in sync:
 - the `// v 1.x` header comment in `proto/veyron_protocol.proto`, and
 - `veyron_wire::PROTOCOL_VERSION` (a `&str` exported from `src/lib.rs`).
 
+**v1.6** (D-01, 2026-08-14) adds device identity + versioning + `user_id` +
+the AI tool schema, one additive bump: `PluginRegister` gains `device_id`,
+`os` (`DeviceOs`), `arch`, `os_version`, `capabilities[]`, `protocol_version`
+(semver), `user_id`; `PluginManifest` gains `platforms[]` and `action_specs[]`
+(`ActionSpec { name, description, params_schema, risk, requires_confirmation }`
++ `ActionRisk`); new `DeviceInfo { device_id, os, arch, os_version,
+capabilities, last_seen, state }` + `DeviceState` for registry/discovery.
+Shipped as **0.2.3** (patch — additive per the rule above). The kernel
+continues to consume published 0.2.2 until D-03 wires the fields up;
+vendored SDK copies re-synced byte-identical.
+
 **v1.4** adds five `PermissionType` values — 15 through 19:
 `PERMISSION_SECRETS`, `PERMISSION_CLIPBOARD`, `PERMISSION_LAUNCH`,
 `PERMISSION_SCREEN`, `PERMISSION_HOME` — covering the planned
