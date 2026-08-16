@@ -48,9 +48,11 @@ the AI tool schema, one additive bump: `PluginRegister` gains `device_id`,
 (`ActionSpec { name, description, params_schema, risk, requires_confirmation }`
 + `ActionRisk`); new `DeviceInfo { device_id, os, arch, os_version,
 capabilities, last_seen, state }` + `DeviceState` for registry/discovery.
-Shipped as **0.2.3** (patch — additive per the rule above). The kernel
-continues to consume published 0.2.2 until D-03 wires the fields up;
-vendored SDK copies re-synced byte-identical.
+Shipped as **0.2.3** (patch — additive per the rule above), **published to
+crates.io 2026-08-14**. The kernel continues to consume published 0.2.2 until
+D-03 wires the fields up (then bumps the requirement to 0.2.3 — no
+`[patch.crates-io]` override needed); vendored SDK copies re-synced
+byte-identical.
 
 **v1.4** adds five `PermissionType` values — 15 through 19:
 `PERMISSION_SECRETS`, `PERMISSION_CLIPBOARD`, `PERMISSION_LAUNCH`,
