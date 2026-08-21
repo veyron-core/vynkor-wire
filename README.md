@@ -67,6 +67,12 @@ stay contiguous because the kernel's `known_permissions()` probe
 consecutive misses — a gap ≥4 silently rejects installs of any plugin
 declaring a later value.
 
+**0.2.4** (V-01, 2026-08-21) ships the opt-in `manifest` module — no proto
+change, header and `PROTOCOL_VERSION` untouched, **published to crates.io
+2026-08-21**. The kernel keeps consuming 0.2.3 until V-02 switches
+`loader.rs` to `veyron_wire::manifest` (then bumps the requirement to 0.2.4 —
+no `[patch.crates-io]` override needed).
+
 Crate version tracks the wire protocol. Additive changes (new enum values,
 new optional fields) bump the **patch** (`0.2.0 → 0.2.1`); breaking wire
 changes bump the **minor** (`0.2.x → 0.3.0`). Both the proto header and
