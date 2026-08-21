@@ -20,6 +20,10 @@ of pulling in the whole kernel crate.
   `/run/user/<uid>` → `~/.veyron/run` fallback order.
 - `proto::veyron` — protobuf types generated from `proto/veyron_protocol.proto`
   at build time via `prost-build`.
+- `manifest` *(opt-in)* — plugin-manifest parsing/validation (`InstallManifest`,
+  `validate_manifest`, `check_kernel_compatibility`), the single implementation
+  shared by the kernel and vynm. Enable with `features = ["manifest"]`; off by
+  default so SDK consumers compile neither serde nor serde_json nor semver.
 - `WireError` — the protocol-level error type returned by `framing` and
   `mac` functions.
 
