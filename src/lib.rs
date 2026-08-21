@@ -6,6 +6,11 @@ pub mod error;
 pub mod framing;
 pub mod mac;
 pub mod socket;
+
+// opt-in plugin-manifest module (V-01): shared by kernel + vynm, off by
+// default so SDK consumers compile neither serde_json nor semver.
+#[cfg(feature = "manifest")]
+pub mod manifest;
 pub mod proto {
     #![allow(clippy::enum_variant_names)]
     pub mod veyron {

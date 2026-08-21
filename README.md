@@ -20,6 +20,10 @@ of pulling in the whole kernel crate.
   `/run/user/<uid>` → `~/.veyron/run` fallback order.
 - `proto::veyron` — protobuf types generated from `proto/veyron_protocol.proto`
   at build time via `prost-build`.
+- `manifest` *(opt-in)* — plugin-manifest parsing/validation (`InstallManifest`,
+  `validate_manifest`, `check_kernel_compatibility`), the single implementation
+  shared by the kernel and vynm. Enable with `features = ["manifest"]`; off by
+  default so SDK consumers compile neither serde nor serde_json nor semver.
 - `WireError` — the protocol-level error type returned by `framing` and
   `mac` functions.
 
@@ -62,6 +66,12 @@ stay contiguous because the kernel's `known_permissions()` probe
 (`veyron/src/marketplace/installer.rs`) walks enum codes and stops after 4
 consecutive misses — a gap ≥4 silently rejects installs of any plugin
 declaring a later value.
+
+**0.2.4** (V-01, 2026-08-21) ships the opt-in `manifest` module — no proto
+change, header and `PROTOCOL_VERSION` untouched, **published to crates.io
+2026-08-21**. The kernel keeps consuming 0.2.3 until V-02 switches
+`loader.rs` to `veyron_wire::manifest` (then bumps the requirement to 0.2.4 —
+no `[patch.crates-io]` override needed).
 
 Crate version tracks the wire protocol. Additive changes (new enum values,
 new optional fields) bump the **patch** (`0.2.0 → 0.2.1`); breaking wire
