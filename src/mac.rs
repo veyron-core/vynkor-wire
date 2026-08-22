@@ -12,7 +12,7 @@ type HmacSha256 = Hmac<Sha256>;
 /// ack, and the registered `plugin_id`.
 pub fn derive_session_key(jwt_secret: &[u8], nonce: &[u8], plugin_id: &str) -> [u8; 32] {
     let hk = Hkdf::<Sha256>::new(Some(nonce), jwt_secret);
-    let mut info = b"veyron-frame-mac-v1|".to_vec();
+    let mut info = b"vynkor-frame-mac-v1|".to_vec();
     info.extend_from_slice(plugin_id.as_bytes());
     let mut okm = [0u8; 32];
     // HKDF-SHA256 expand of 32 bytes never exceeds the length limit -> safe.

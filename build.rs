@@ -4,10 +4,10 @@ fn main() {
     // identity fields, D-01); boxing would reshape a published protocol type,
     // so silence the lint on the generated enum instead
     config.type_attribute(
-        "veyron.Envelope.payload",
+        "vynkor.Envelope.payload",
         "#[allow(clippy::large_enum_variant)]",
     );
     config
-        .compile_protos(&["proto/veyron_protocol.proto"], &["proto/"])
+        .compile_protos(&["proto/vynkor_protocol.proto"], &["proto/"])
         .unwrap_or_else(|e| panic!("proto codegen failed: {}", e));
 }

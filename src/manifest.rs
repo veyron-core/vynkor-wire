@@ -18,7 +18,7 @@ use std::sync::OnceLock;
 use serde::Deserialize;
 
 use crate::error::WireError;
-use crate::proto::veyron::PermissionType;
+use crate::proto::vynkor::PermissionType;
 
 // permission strings accepted in plugin.json: every proto enum variant in both
 // the documented lowercase form (storage) and the PERMISSION_-prefixed proto
