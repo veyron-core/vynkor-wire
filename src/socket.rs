@@ -2,8 +2,9 @@ use std::os::unix::fs::PermissionsExt;
 use std::path::PathBuf;
 
 /// Resolves the same private runtime directory the kernel uses, so SDKs
-/// pick the identical default socket location when `VEYRON_SOCKET_PATH`
-/// is unset. Order: `$XDG_RUNTIME_DIR`, `/run/user/<uid>`, `~/.veyron/run`.
+/// pick the identical default socket location when `VYN_SOCKET_PATH`
+/// is unset. Order: `$XDG_RUNTIME_DIR`, `/run/user/<uid>`,
+/// `~/.local/state/vyn/run`.
 pub fn default_private_dir() -> Option<PathBuf> {
     if let Ok(runtime_dir) = std::env::var("XDG_RUNTIME_DIR") {
         return Some(PathBuf::from(runtime_dir));
@@ -16,7 +17,11 @@ pub fn default_private_dir() -> Option<PathBuf> {
     }
 
     if let Ok(home) = std::env::var("HOME") {
-        let dir = PathBuf::from(home).join(".veyron").join("run");
+        let dir = PathBuf::from(home)
+            .join(".local")
+            .join("state")
+            .join("vyn")
+            .join("run");
         if std::fs::create_dir_all(&dir).is_ok()
             && std::fs::set_permissions(&dir, std::fs::Permissions::from_mode(0o700)).is_ok()
         {
@@ -29,6 +34,6 @@ pub fn default_private_dir() -> Option<PathBuf> {
 
 pub fn default_socket_path() -> String {
     default_private_dir()
-        .map(|dir| dir.join("veyron.sock").to_string_lossy().to_string())
+        .map(|dir| dir.join("vyn.sock").to_string_lossy().to_string())
         .unwrap_or_default()
 }

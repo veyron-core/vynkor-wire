@@ -76,7 +76,7 @@ stage 1). Branch `feat/manifest-module`, base `main`. Implemented 2026-08-21.
    (dry-run first), verified via `cargo search`. No proto re-sync needed:
    header and `PROTOCOL_VERSION` are untouched.
 2. **V-02 (kernel lane)**: switch `src/plugins/loader.rs` import to
-   `veyron_wire::manifest::{validate_manifest, InstallManifest}`, pass
+   `vynkor_wire::manifest::{validate_manifest, InstallManifest}`, pass
    `crate::auth::permissions::resolve_permission` as the resolver, add
    `features = ["manifest"]` to the wire dep. Since 0.2.4 is already on
    crates.io, the planned `[patch.crates-io]` git override is NOT needed —
