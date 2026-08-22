@@ -1,6 +1,6 @@
 # vynkor-wire
 
-Shared wire-protocol crate for [Vynkor](https://github.com/veyron-core/vynkor):
+Shared wire-protocol crate for [Vynkor](https://github.com/vynkor-core/vynkor):
 frame framing, frame authentication, socket-path defaults, and the generated
 Protobuf types. This is the protocol surface the Vynkor kernel and its SDKs
 both build on, so a plugin author can depend on `vynkor-wire` alone instead
@@ -35,8 +35,8 @@ of pulling in the whole kernel crate.
 
 C++ and Python SDKs can't depend on a Cargo crate directly — they vendor a
 copy of `proto/vynkor_protocol.proto` instead; see
-[`veyron-sdk-cpp`](https://github.com/veyron-core/vynkor-sdk-cpp) and
-[`veyron-sdk-python`](https://github.com/veyron-core/vynkor-sdk-python).
+[`vynkor-sdk-cpp`](https://github.com/vynkor-core/vynkor-sdk-cpp) and
+[`vynkor-sdk-python`](https://github.com/vynkor-core/vynkor-sdk-python).
 
 ## Protocol versioning
 
