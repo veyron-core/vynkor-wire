@@ -191,7 +191,7 @@ pub fn check_kernel_compatibility(
 /// on wording keeps working.
 pub fn validate_manifest(
     path: &Path,
-    kernel_ver: &semver::Version,
+    kernel_ver: Option<&semver::Version>,
     resolver: fn(&str) -> Option<PermissionType>,
 ) -> Result<InstallManifest, WireError> {
     let data = fs::read_to_string(path).map_err(|_| {
@@ -201,12 +201,18 @@ pub fn validate_manifest(
     let manifest: InstallManifest = serde_json::from_str(&data)
         .map_err(|e| WireError::Internal(format!("Invalid plugin.json: {e}")))?;
 
-    check_kernel_compatibility(
-        &manifest.plugin_id,
-        &manifest.kernel_compatibility_range.min,
-        &manifest.kernel_compatibility_range.max,
-        kernel_ver,
-    )?;
+    // D2: `None` = the validating side has no authoritative kernel version
+    // (vynm installing for an unreachable kernel) — the compat range check is
+    // skipped and left to the kernel's boot-time validation, which is the
+    // authority. Callers that KNOW their version (the kernel loader) pass it.
+    if let Some(kernel_ver) = kernel_ver {
+        check_kernel_compatibility(
+            &manifest.plugin_id,
+            &manifest.kernel_compatibility_range.min,
+            &manifest.kernel_compatibility_range.max,
+            kernel_ver,
+        )?;
+    }
 
     let known = known_permissions();
     for perm in &manifest.permissions {

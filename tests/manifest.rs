@@ -85,8 +85,12 @@ fn manifest_missing_compat_range_errors() {
         r#"{"plugin_id":"foo","version":"1.0.0","permissions":[],"binary":"foo"}"#,
     );
     let kernel = Version::parse("0.1.0").unwrap();
-    let err =
-        validate_manifest(&tmp.path().join("plugin.json"), &kernel, default_resolver).unwrap_err();
+    let err = validate_manifest(
+        &tmp.path().join("plugin.json"),
+        Some(&kernel),
+        default_resolver,
+    )
+    .unwrap_err();
     let msg = err.to_string();
     assert!(
         msg.contains("Invalid plugin.json"),
@@ -109,8 +113,12 @@ fn manifest_unknown_permission_errors() {
         }"#,
     );
     let kernel = Version::parse("0.1.0").unwrap();
-    let err =
-        validate_manifest(&tmp.path().join("plugin.json"), &kernel, default_resolver).unwrap_err();
+    let err = validate_manifest(
+        &tmp.path().join("plugin.json"),
+        Some(&kernel),
+        default_resolver,
+    )
+    .unwrap_err();
     let msg = err.to_string();
     assert!(
         msg.contains("unknown permission") && msg.contains("teleport"),
@@ -147,7 +155,11 @@ fn manifest_accepts_every_proto_permission() {
                     }}"#
                 ),
             );
-            let res = validate_manifest(&tmp.path().join("plugin.json"), &kernel, default_resolver);
+            let res = validate_manifest(
+                &tmp.path().join("plugin.json"),
+                Some(&kernel),
+                default_resolver,
+            );
             assert!(
                 res.is_ok(),
                 "permission {perm} (proto {proto_name}) should be accepted, got: {res:?}"
@@ -171,8 +183,12 @@ fn manifest_kernel_compat_enforced() {
         }"#,
     );
     let kernel = Version::parse("0.1.0").unwrap();
-    let err =
-        validate_manifest(&tmp.path().join("plugin.json"), &kernel, default_resolver).unwrap_err();
+    let err = validate_manifest(
+        &tmp.path().join("plugin.json"),
+        Some(&kernel),
+        default_resolver,
+    )
+    .unwrap_err();
     let msg = err.to_string();
     assert!(
         msg.contains("requires Veyron kernel >= 99.0.0"),
@@ -196,8 +212,12 @@ fn manifest_valid_ok() {
         }"#,
     );
     let kernel = Version::parse("0.1.0").unwrap();
-    let manifest =
-        validate_manifest(&tmp.path().join("plugin.json"), &kernel, default_resolver).unwrap();
+    let manifest = validate_manifest(
+        &tmp.path().join("plugin.json"),
+        Some(&kernel),
+        default_resolver,
+    )
+    .unwrap();
     assert_eq!(manifest.plugin_id, "stt-whisper");
     assert_eq!(manifest.version, "1.2.0");
 }
@@ -206,8 +226,12 @@ fn manifest_valid_ok() {
 fn manifest_not_found_errors() {
     let tmp = tempdir().unwrap();
     let kernel = Version::parse("0.1.0").unwrap();
-    let err =
-        validate_manifest(&tmp.path().join("plugin.json"), &kernel, default_resolver).unwrap_err();
+    let err = validate_manifest(
+        &tmp.path().join("plugin.json"),
+        Some(&kernel),
+        default_resolver,
+    )
+    .unwrap_err();
     assert!(err.to_string().contains("Invalid plugin.json"));
 }
 
@@ -227,8 +251,12 @@ fn manifest_legacy_actions_parse() {
         }"#,
     );
     let kernel = Version::parse("0.1.0").unwrap();
-    let manifest =
-        validate_manifest(&tmp.path().join("plugin.json"), &kernel, default_resolver).unwrap();
+    let manifest = validate_manifest(
+        &tmp.path().join("plugin.json"),
+        Some(&kernel),
+        default_resolver,
+    )
+    .unwrap();
     let actions = manifest.actions.unwrap();
     assert_eq!(actions.len(), 2);
     for spec in &actions {
@@ -258,8 +286,12 @@ fn manifest_v2_actions_parse() {
         }"#,
     );
     let kernel = Version::parse("0.1.0").unwrap();
-    let manifest =
-        validate_manifest(&tmp.path().join("plugin.json"), &kernel, default_resolver).unwrap();
+    let manifest = validate_manifest(
+        &tmp.path().join("plugin.json"),
+        Some(&kernel),
+        default_resolver,
+    )
+    .unwrap();
     let actions = manifest.actions.unwrap();
     assert_eq!(actions.len(), 2);
     assert!(matches!(&actions[0], ActionSpec::V2(_)));
@@ -286,8 +318,12 @@ fn manifest_unknown_action_permission_errors() {
         }"#,
     );
     let kernel = Version::parse("0.1.0").unwrap();
-    let err =
-        validate_manifest(&tmp.path().join("plugin.json"), &kernel, default_resolver).unwrap_err();
+    let err = validate_manifest(
+        &tmp.path().join("plugin.json"),
+        Some(&kernel),
+        default_resolver,
+    )
+    .unwrap_err();
     let msg = err.to_string();
     assert!(
         msg.contains("unknown action permission")
@@ -317,7 +353,12 @@ fn manifest_action_permission_resolves_both_forms() {
             ),
         );
         assert!(
-            validate_manifest(&tmp.path().join("plugin.json"), &kernel, default_resolver).is_ok(),
+            validate_manifest(
+                &tmp.path().join("plugin.json"),
+                Some(&kernel),
+                default_resolver
+            )
+            .is_ok(),
             "permission {perm} should be accepted"
         );
     }
@@ -346,10 +387,52 @@ fn sandbox_hint_parses_all_three_states() {
     ] {
         let tmp = tempdir().unwrap();
         write_manifest(tmp.path(), &json);
-        let manifest =
-            validate_manifest(&tmp.path().join("plugin.json"), &kernel, default_resolver).unwrap();
+        let manifest = validate_manifest(
+            &tmp.path().join("plugin.json"),
+            Some(&kernel),
+            default_resolver,
+        )
+        .unwrap();
         assert_eq!(manifest.sandbox, expected);
     }
+}
+
+// ── D2: None kernel_ver skips the compat range (kernel re-checks at boot) ───
+
+#[test]
+fn none_kernel_version_skips_range_check_but_rest_still_applies() {
+    let tmp = tempdir().unwrap();
+    write_manifest(
+        tmp.path(),
+        r#"{
+            "plugin_id": "future",
+            "version": "1.0.0",
+            "permissions": ["storage"],
+            "binary": "future",
+            "kernel_compatibility_range": {"min": "99.0.0", "max": "*"}
+        }"#,
+    );
+    let path = tmp.path().join("plugin.json");
+
+    // None: no authoritative version at hand → range left to kernel boot
+    assert!(validate_manifest(&path, None, default_resolver).is_ok());
+
+    // Some(): same manifest refuses against an older kernel
+    let old = Version::parse("0.1.0").unwrap();
+    let err = validate_manifest(&path, Some(&old), default_resolver).unwrap_err();
+    assert!(err.to_string().contains("requires Veyron kernel >= 99.0.0"));
+
+    // range skipped ≠ validation skipped: unknown permission still fails
+    let mut bad =
+        serde_json::from_str::<serde_json::Value>(&std::fs::read_to_string(&path).unwrap())
+            .unwrap();
+    bad["permissions"] = serde_json::json!(["teleport"]);
+    std::fs::write(&path, bad.to_string()).unwrap();
+    let err = validate_manifest(&path, None, default_resolver).unwrap_err();
+    assert!(
+        err.to_string().contains("unknown permission"),
+        "unexpected: {err}"
+    );
 }
 
 // ── D1 seam: the injected resolver ──────────────────────────────────────────
@@ -397,9 +480,15 @@ fn validate_manifest_honors_injected_resolver() {
     write_manifest(tmp.path(), manifest_json);
     let kernel = Version::parse("0.1.0").unwrap();
 
-    let err = validate_manifest(&tmp.path().join("plugin.json"), &kernel, deny_all).unwrap_err();
+    let err =
+        validate_manifest(&tmp.path().join("plugin.json"), Some(&kernel), deny_all).unwrap_err();
     assert!(err.to_string().contains("unknown action permission"));
 
     // same manifest passes under the default policy
-    assert!(validate_manifest(&tmp.path().join("plugin.json"), &kernel, default_resolver).is_ok());
+    assert!(validate_manifest(
+        &tmp.path().join("plugin.json"),
+        Some(&kernel),
+        default_resolver
+    )
+    .is_ok());
 }
