@@ -18,7 +18,7 @@ of pulling in the whole kernel crate.
 - `socket` — default Unix socket path resolution (`default_socket_path`,
   `default_private_dir`), matching the kernel's `$XDG_RUNTIME_DIR` →
   `/run/user/<uid>` → `~/.local/state/vyn/run` fallback order.
-- `proto::veyron` — protobuf types generated from `proto/veyron_protocol.proto`
+- `proto::veyron` — protobuf types generated from `proto/vynkor_protocol.proto`
   at build time via `prost-build`.
 - `manifest` *(opt-in)* — plugin-manifest parsing/validation (`InstallManifest`,
   `validate_manifest`, `check_kernel_compatibility`), the single implementation
@@ -34,7 +34,7 @@ of pulling in the whole kernel crate.
 - `vynkor-sdk` (Rust), via the published crates.io version.
 
 C++ and Python SDKs can't depend on a Cargo crate directly — they vendor a
-copy of `proto/veyron_protocol.proto` instead; see
+copy of `proto/vynkor_protocol.proto` instead; see
 [`veyron-sdk-cpp`](https://github.com/veyron-core/vynkor-sdk-cpp) and
 [`veyron-sdk-python`](https://github.com/veyron-core/vynkor-sdk-python).
 
@@ -42,7 +42,7 @@ copy of `proto/veyron_protocol.proto` instead; see
 
 The wire protocol version lives in two places that must stay in sync:
 
-- the `// v 1.x` header comment in `proto/veyron_protocol.proto`, and
+- the `// v 1.x` header comment in `proto/vynkor_protocol.proto`, and
 - `vynkor_wire::PROTOCOL_VERSION` (a `&str` exported from `src/lib.rs`).
 
 **v1.6** (D-01, 2026-08-14) adds device identity + versioning + `user_id` +
@@ -81,7 +81,7 @@ changes bump the **minor** (`0.2.x → 0.3.0`). Both the proto header and
 ### Releasing a new version
 
 1. Bump `version` in `Cargo.toml`, `PROTOCOL_VERSION` in `src/lib.rs`, and
-   the `// v 1.x` header in `proto/veyron_protocol.proto` — one commit.
+   the `// v 1.x` header in `proto/vynkor_protocol.proto` — one commit.
 2. Re-sync the vendored proto copies in `veyron-sdk-python/proto/` and
    `veyron-sdk-cpp/proto/` (byte-identical), and regenerate the Python
    binding via the kernel's `scripts/gen_proto_python.py`. The kernel's

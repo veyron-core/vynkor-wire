@@ -10,7 +10,7 @@ use tempfile::tempdir;
 use vynkor_wire::manifest::{
     check_kernel_compatibility, default_resolver, validate_manifest, ActionSpec,
 };
-use vynkor_wire::proto::veyron::PermissionType;
+use vynkor_wire::proto::vynkor::PermissionType;
 
 // prost 0.13+ derives inherent as_str_name/try_from (no Enumeration::values);
 // probe codes, stopping after a run of misses so a reserved gap (7) is fine.
