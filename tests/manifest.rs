@@ -323,8 +323,36 @@ fn manifest_action_permission_resolves_both_forms() {
     }
 }
 
-// ── D1 seam: the injected resolver ──────────────────────────────────────────
+// ── D3: optional sandbox hint ───────────────────────────────────────────────
 
+#[test]
+fn sandbox_hint_parses_all_three_states() {
+    let kernel = Version::parse("0.1.0").unwrap();
+    let base = |sandbox: &str| {
+        format!(
+            r#"{{
+                "plugin_id": "db",
+                "version": "1.0.0",
+                "permissions": [],
+                "binary": "db",
+                "kernel_compatibility_range": {{"min": "0.1.0", "max": "*"}}{sandbox}
+            }}"#
+        )
+    };
+    for (json, expected) in [
+        (base(""), None),
+        (base(r#", "sandbox": true"#), Some(true)),
+        (base(r#", "sandbox": false"#), Some(false)),
+    ] {
+        let tmp = tempdir().unwrap();
+        write_manifest(tmp.path(), &json);
+        let manifest =
+            validate_manifest(&tmp.path().join("plugin.json"), &kernel, default_resolver).unwrap();
+        assert_eq!(manifest.sandbox, expected);
+    }
+}
+
+// ── D1 seam: the injected resolver ──────────────────────────────────────────
 #[test]
 fn default_resolver_accepts_lowercase_and_proto_forms() {
     assert_eq!(
