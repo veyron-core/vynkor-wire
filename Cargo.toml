@@ -5,7 +5,7 @@ edition = "2021"
 rust-version = "1.85.0"
 description = "Vynkor wire protocol: framing, frame MAC, and generated protobuf types shared by the kernel and its SDKs."
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/veyron-core/vynkor-wire"
+repository = "https://github.com/vynkor-core/vynkor-wire"
 
 [dependencies]
 prost = "0.13"
