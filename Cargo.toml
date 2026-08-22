@@ -1,10 +1,10 @@
 [package]
 name = "veyron-wire"
-version = "0.2.4"
+version = "0.2.5"
 edition = "2021"
 rust-version = "1.85.0"
 description = "Veyron wire protocol: framing, frame MAC, and generated protobuf types shared by the kernel and its SDKs."
-license = "MIT"
+license = "MIT OR Apache-2.0"
 repository = "https://github.com/veyron-core/veyron-wire"
 
 [dependencies]

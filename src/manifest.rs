@@ -72,6 +72,12 @@ pub struct InstallManifest {
     /// the plugin dir. Empty = not declared (legacy extract-everything).
     #[serde(default)]
     pub files: Vec<String>,
+    /// D3 sandbox hint: the plugin's own preference for kernel sandboxing.
+    /// `None` (absent) reads as "suggest sandboxing" — installers default the
+    /// drop-in to true. Purely advisory; operators edit the drop-in to
+    /// override, and only Linux honors it at spawn time.
+    #[serde(default)]
+    pub sandbox: Option<bool>,
 }
 
 /// A single entry in a v2 manifest's `actions` array. Legacy manifests declare
