@@ -1,6 +1,6 @@
 // Wire protocol version. Mirrors the `// v 1.x` header comment in
 // proto/vynkor_protocol.proto — bump both together on any protocol change.
-pub const PROTOCOL_VERSION: &str = "1.6";
+pub const PROTOCOL_VERSION: &str = "1.7";
 
 pub mod error;
 pub mod framing;
