@@ -1,6 +1,6 @@
 # V-01 implementation notes — wire manifest module
 
-Task: **V-01** from `veyron/docs/VYNM_ROADMAP.md` (vynm marketplace extraction,
+Task: **V-01** from `vynkor/docs/VYNM_ROADMAP.md` (vynm marketplace extraction,
 stage 1). Branch `feat/manifest-module`, base `main`. Implemented 2026-08-21.
 
 ## What changed
@@ -23,7 +23,7 @@ stage 1). Branch `feat/manifest-module`, base `main`. Implemented 2026-08-21.
 2. **Error variant: reused `WireError::Internal(String)`** instead of adding a
    new one. The roadmap allowed either ("new variant or existing message
    variant"). A new variant would break the kernel's exhaustive
-   `From<WireError> for VeyronError` match on day one of adoption; reusing
+   `From<WireError> for VynkorError` match on day one of adoption; reusing
    `Internal` keeps the patch bump honestly additive and preserves today's
    fail-loud semantics. All message texts are byte-identical to the kernel's
    (`"Invalid plugin.json: ..."`, `"Plugin '{}' declares unknown permission ..."`),
