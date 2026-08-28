@@ -163,7 +163,7 @@ pub fn check_kernel_compatibility(
 
     if *running_kernel < min {
         return Err(WireError::Internal(format!(
-            "Plugin '{slug}' requires Veyron kernel >= {min}, you are running {running_kernel}"
+            "Plugin '{slug}' requires Vynkor kernel >= {min}, you are running {running_kernel}"
         )));
     }
 
@@ -176,7 +176,7 @@ pub fn check_kernel_compatibility(
 
         if *running_kernel > max {
             return Err(WireError::Internal(format!(
-                "Plugin '{slug}' requires Veyron kernel <= {max}, you are running {running_kernel}"
+                "Plugin '{slug}' requires Vynkor kernel <= {max}, you are running {running_kernel}"
             )));
         }
     }

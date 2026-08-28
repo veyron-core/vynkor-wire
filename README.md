@@ -18,7 +18,7 @@ of pulling in the whole kernel crate.
 - `socket` — default Unix socket path resolution (`default_socket_path`,
   `default_private_dir`), matching the kernel's `$XDG_RUNTIME_DIR` →
   `/run/user/<uid>` → `~/.local/state/vyn/run` fallback order.
-- `proto::veyron` — protobuf types generated from `proto/vynkor_protocol.proto`
+- `proto::vynkor` — protobuf types generated from `proto/vynkor_protocol.proto`
   at build time via `prost-build`.
 - `manifest` *(opt-in)* — plugin-manifest parsing/validation (`InstallManifest`,
   `validate_manifest`, `check_kernel_compatibility`), the single implementation
@@ -63,14 +63,14 @@ byte-identical.
 `PERMISSION_SCREEN`, `PERMISSION_HOME` — covering the planned
 `secrets`/`clipboard`/`launcher`/`screenshot`/`home` plugins. The values
 stay contiguous because the kernel's `known_permissions()` probe
-(`veyron/src/marketplace/installer.rs`) walks enum codes and stops after 4
+(`vynkor/src/marketplace/installer.rs`) walks enum codes and stops after 4
 consecutive misses — a gap ≥4 silently rejects installs of any plugin
 declaring a later value.
 
 **0.2.4** (V-01, 2026-08-21) ships the opt-in `manifest` module — no proto
 change, header and `PROTOCOL_VERSION` untouched, **published to crates.io
 2026-08-21**. The kernel keeps consuming 0.2.3 until V-02 switches
-`loader.rs` to `veyron_wire::manifest` (then bumps the requirement to 0.2.4 —
+`loader.rs` to `vynkor_wire::manifest` (then bumps the requirement to 0.2.4 —
 no `[patch.crates-io]` override needed).
 
 Crate version tracks the wire protocol. Additive changes (new enum values,
@@ -82,8 +82,8 @@ changes bump the **minor** (`0.2.x → 0.3.0`). Both the proto header and
 
 1. Bump `version` in `Cargo.toml`, `PROTOCOL_VERSION` in `src/lib.rs`, and
    the `// v 1.x` header in `proto/vynkor_protocol.proto` — one commit.
-2. Re-sync the vendored proto copies in `veyron-sdk-python/proto/` and
-   `veyron-sdk-cpp/proto/` (byte-identical), and regenerate the Python
+2. Re-sync the vendored proto copies in `vynkor-sdk-python/proto/` and
+   `vynkor-sdk-cpp/proto/` (byte-identical), and regenerate the Python
    binding via the kernel's `scripts/gen_proto_python.py`. The kernel's
    `tests/unit/test_proto_sync.rs` (R8-05) guards all three copies and the
    `pb2` marker check.

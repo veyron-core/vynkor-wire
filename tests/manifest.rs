@@ -45,7 +45,7 @@ fn compat_below_min_rejected() {
     let err = check_kernel_compatibility("stt-whisper", "0.3.0", "1.0.0", &kernel).unwrap_err();
     let msg = err.to_string();
     assert!(
-        msg.contains("requires Veyron kernel >= 0.3.0") && msg.contains("you are running 0.2.0"),
+        msg.contains("requires Vynkor kernel >= 0.3.0") && msg.contains("you are running 0.2.0"),
         "unexpected: {msg}"
     );
 }
@@ -57,7 +57,7 @@ fn compat_above_max_rejected() {
     let err = check_kernel_compatibility("stt-whisper", "0.3.0", "1.0.0", &kernel).unwrap_err();
     let msg = err.to_string();
     assert!(
-        msg.contains("requires Veyron kernel <= 1.0.0") && msg.contains("you are running 2.0.0"),
+        msg.contains("requires Vynkor kernel <= 1.0.0") && msg.contains("you are running 2.0.0"),
         "unexpected: {msg}"
     );
 }
@@ -191,7 +191,7 @@ fn manifest_kernel_compat_enforced() {
     .unwrap_err();
     let msg = err.to_string();
     assert!(
-        msg.contains("requires Veyron kernel >= 99.0.0"),
+        msg.contains("requires Vynkor kernel >= 99.0.0"),
         "unexpected: {msg}"
     );
 }
@@ -420,7 +420,7 @@ fn none_kernel_version_skips_range_check_but_rest_still_applies() {
     // Some(): same manifest refuses against an older kernel
     let old = Version::parse("0.1.0").unwrap();
     let err = validate_manifest(&path, Some(&old), default_resolver).unwrap_err();
-    assert!(err.to_string().contains("requires Veyron kernel >= 99.0.0"));
+    assert!(err.to_string().contains("requires Vynkor kernel >= 99.0.0"));
 
     // range skipped ≠ validation skipped: unknown permission still fails
     let mut bad =
