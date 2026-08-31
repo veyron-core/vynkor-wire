@@ -1,5 +1,9 @@
 # vynkor-wire
 
+[![crates.io](https://img.shields.io/crates/v/vynkor-wire.svg)](https://crates.io/crates/vynkor-wire)
+[![docs.rs](https://img.shields.io/badge/docs.rs-vynkor--wire-blue)](https://docs.rs/vynkor-wire)
+[![CI](https://github.com/vynkor-core/vynkor-wire/actions/workflows/ci.yml/badge.svg)](https://github.com/vynkor-core/vynkor-wire/actions/workflows/ci.yml)
+
 Shared wire-protocol crate for [Vynkor](https://github.com/vynkor-core/vynkor):
 frame framing, frame authentication, socket-path defaults, and the generated
 Protobuf types. This is the protocol surface the Vynkor kernel and its SDKs
