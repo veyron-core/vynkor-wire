@@ -1,0 +1,44 @@
+name: proto-sync
+
+# When wire's proto changes, verify SDK vendored copies are byte-identical.
+# If drift is detected, fail the check and (on develop) auto-open an issue.
+# Full auto-PR sync requires a PAT; for now we fail + instruct to run scripts/sync-proto.sh if it exists.
+
+on:
+  push:
+    branches: [develop, main]
+    paths: ["proto/vynkor_protocol.proto"]
+  pull_request:
+    branches: [develop, main]
+    paths: ["proto/vynkor_protocol.proto"]
+  workflow_dispatch:
+
+jobs:
+  check-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fetch SDK vendored protos
+        run: |
+          echo "Fetching SDK vendored protos for byte-identical check..."
+          for sdk in vynkor-sdk-cpp vynkor-sdk-python; do
+            if gh api repos/vynkor-core/$sdk/contents/proto/vynkor_protocol.proto --jq '.content' 2>/dev/null | base64 -d > /tmp/$sdk.proto 2>/dev/null; then
+              if cmp -s proto/vynkor_protocol.proto /tmp/$sdk.proto; then
+                echo "✓ $sdk: in sync"
+              else
+                echo "✗ $sdk: DRIFT detected"
+                echo "  Run: cp proto/vynkor_protocol.proto ../$sdk/proto/  (and update generated bindings)"
+                drift=1
+              fi
+            else
+              echo "? $sdk: no proto found at proto/vynkor_protocol.proto (skipped)"
+            fi
+          done
+          if [ "${drift:-0}" = "1" ]; then
+            echo "::error::Proto drift detected. Sync vendored copies byte-identically."
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
